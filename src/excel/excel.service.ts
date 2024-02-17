@@ -3,7 +3,7 @@ import * as ExcelJS from 'exceljs';
 import { StudentsMeeting } from "../entity/student-meeting.entity";
 
 @Injectable()
-export class Excel {
+export class ExcelService {
 	async createExcelFile(meeting: StudentsMeeting) {
 		const workbook = new ExcelJS.Workbook();
 		const worksheet = workbook.addWorksheet('MeetingData');

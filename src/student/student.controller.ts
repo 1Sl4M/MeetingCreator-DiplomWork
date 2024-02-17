@@ -3,6 +3,7 @@ import { CreateStudentDto } from '../dto/create-student.dto';
 import { Student } from '../entity/student.entity';
 import { StudentService } from './student.service';
 import { StudentsMeetingDto } from '../dto/student-meeting.dto';
+import { StudentFormDto } from '../dto/student-form.dto';
 
 @Controller('student')
 export class StudentController {
@@ -16,6 +17,12 @@ export class StudentController {
   @Post('meeting')
   async saveMeetingDate(@Body() data: StudentsMeetingDto) {
     return this.studentService.saveMeetingDate(data);
+  }
+
+  @Post('form/:id')
+  async saveStudentDataToExcel(@Body() data: StudentFormDto, @Param('id') id: number) {
+    console.log(data, id);
+    return this.studentService.saveStudentDataToExcel(data, id);
   }
 
   // @Get('meeting/info')
