@@ -9,6 +9,7 @@ import { AdviserMeeting } from '../entity/adviser-meeting.entity';
 import { StudentForm } from '../entity/student-form';
 import { MailModule } from '../mail/mail.module';
 import { AdviserForm } from '../entity/adviser-form.entity';
+import { ExcelService } from '../excel/excel.service';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { AdviserForm } from '../entity/adviser-form.entity';
     ]),
     MailModule,
   ],
-  providers: [AdviserService],
+  providers: [AdviserService, ExcelService],
   controllers: [AdviserController],
   exports: [AdviserService],
 })

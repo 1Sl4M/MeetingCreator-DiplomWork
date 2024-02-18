@@ -32,6 +32,7 @@
     "exceljs": "^4.4.0",
     "fs": "^0.0.1-security",
     "nodemailer": "^6.9.8",
+    "path": "^0.12.7",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",

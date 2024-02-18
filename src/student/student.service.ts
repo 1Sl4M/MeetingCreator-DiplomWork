@@ -34,9 +34,7 @@ export class StudentService {
     const studentMails = await this.getEmails();
     const studentNames = await this.getAllStudents();
 
-    const studentNamesMap = studentNames.map(
-      (studentName) => studentName.name
-    );
+    const studentNamesMap = studentNames.map((studentName) => studentName.name);
 
     studentMails.forEach(async (email) => {
       const htmlTemplate = `
@@ -66,32 +64,30 @@ export class StudentService {
   }
 
   async saveStudentDataToExcel(dto: any, id: number) {
-    if(!dto) {
+    if (!dto) {
       throw new BadRequestException('Invalid data');
     }
-    
-    const data = await this.studentForm.save(dto);
-    
-    const filePath = `./uploads/students/${dto.title}${id}.xlsx`;
 
-    const fileExists = await fs.promises.stat(filePath);
+    const meetingData = await this.studentMeeting.findOneBy({ id });
+
+    const data = await this.studentForm.save(dto);
+
+    const filePath = `./uploads/students/${meetingData.title}${id}.xlsx`;
+
+    let fileExists = false;
+    try {
+      await fs.promises.stat(filePath);
+      fileExists = true;
+    } catch (error) {
+      fileExists = false;
+    }
 
     if (fileExists) {
       await this.excel.addToExcelFile(filePath, dto);
     } else {
-      //await this.excel.createExcelFile(meeting);
-      await this.excel.addToExcelFile(filePath, dto);
+      await this.excel.createExcelFile(meetingData, dto);
     }
-
   }
-
-  // async getMeetingInfo(data: any) {
-  //   const meetingInfo = await this.studentMeeting.findOneBy({ id: data.id });
-
-  //   console.log(meetingInfo);
-
-  //   return meetingInfo;
-  // }
 
   async getAllStudents(): Promise<Student[]> {
     return this.student.find({

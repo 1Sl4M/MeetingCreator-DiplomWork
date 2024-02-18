@@ -10,6 +10,7 @@ import { StudentForm } from '../entity/student-form';
 import { MailModule } from '../mail/mail.module';
 import { AdviserModule } from '../adviser/adviser.module';
 import { AdviserForm } from '../entity/adviser-form.entity';
+import { ExcelService } from '../excel/excel.service';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { AdviserForm } from '../entity/adviser-form.entity';
     AdviserModule,
   ],
   controllers: [StudentController],
-  providers: [StudentService],
+  providers: [StudentService, ExcelService],
   exports: [StudentService],
 })
 export class StudentModule {}

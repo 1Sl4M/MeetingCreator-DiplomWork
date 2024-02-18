@@ -1,32 +1,46 @@
 import { Injectable } from "@nestjs/common";
 import * as ExcelJS from 'exceljs';
+import * as path from 'path';
 import { StudentsMeeting } from "../entity/student-meeting.entity";
+import { StudentFormDto } from "../dto/student-form.dto";
 
 @Injectable()
 export class ExcelService {
-	async createExcelFile(meeting: StudentsMeeting) {
+	async createExcelFile(meeting: StudentsMeeting, studentMeeting: StudentFormDto){
+		const filePath = path.resolve(__dirname, '../uploads/students', `${meeting.title}-${meeting.id}.xlsx`);
 		const workbook = new ExcelJS.Workbook();
 		const worksheet = workbook.addWorksheet('MeetingData');
+		
+		worksheet.addRow([
+			'Title',
+			'Description',
+			'Location',
+			'Date',
+			'Name',
+			'Email',
+			'Course',
+			'Phone number',
+			'Institut',
+		]);
 	
-		// Добавляем заголовки
-		worksheet.addRow(['Title', 'Description', 'Date', 'Location', 'Organizer', 'StartTime', 'EndTime']);
-	
-		// Добавляем данные
 		worksheet.addRow([
 			meeting.title,
 			meeting.description,
-			meeting.date.toISOString().split('T')[0], // Преобразование Date в строку формата YYYY-MM-DD
 			meeting.location,
-			meeting.organizer,
-			meeting.startTime,
-			meeting.endTime,
+			new Date(meeting.date).toISOString().split('T')[0],
+			studentMeeting.name,
+			studentMeeting.email,
+			studentMeeting.course,
+			studentMeeting.phoneNumber,
+			studentMeeting.institut,
 		]);
-	
-		// Сохраняем файл
-		await workbook.xlsx.writeFile(`meeting_${meeting.id}.xlsx`);
+
+		console.log(filePath);
+		
+		await workbook.xlsx.writeFile(filePath);
+		//await workbook.xlsx.writeFile(`${meeting.title}-${meeting.id}.xlsx`);
 	}
 	
-	// Функция для добавления новых данных в существующий Excel файл
 	async addToExcelFile(existingFilePath: string, studentData: any) {
 		const workbook = new ExcelJS.Workbook();
 		await workbook.xlsx.readFile(existingFilePath);
