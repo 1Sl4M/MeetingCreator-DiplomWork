@@ -10,6 +10,7 @@ import { MailService } from '../mail/mail.service';
 import { ExcelService } from '../excel/excel.service';
 import { StudentFormDto } from '../dto/student-form.dto';
 import * as fs from 'fs';
+import * as path from 'path'; 
 
 @Injectable()
 export class StudentService {
@@ -70,9 +71,11 @@ export class StudentService {
 
     const meetingData = await this.studentMeeting.findOneBy({ id });
 
-    const data = await this.studentForm.save(dto);
+    await this.studentForm.save(dto);
+    
+    const folderPath = path.resolve(__dirname, '../../../src/excel/uploads/students');
+    const filePath = path.resolve(folderPath, `${meetingData.title}-${meetingData.id}.xlsx`);
 
-    const filePath = `./uploads/students/${meetingData.title}${id}.xlsx`;
 
     let fileExists = false;
     try {
@@ -83,7 +86,7 @@ export class StudentService {
     }
 
     if (fileExists) {
-      await this.excel.addToExcelFile(filePath, dto);
+      await this.excel.addToExcelFile(filePath, meetingData, dto);
     } else {
       await this.excel.createExcelFile(meetingData, dto);
     }

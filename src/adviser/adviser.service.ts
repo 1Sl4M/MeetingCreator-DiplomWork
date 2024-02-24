@@ -6,6 +6,10 @@ import { CreateAdviserDto } from '../dto/create-adviser.dto';
 import { MailService } from '../mail/mail.service';
 import { AdviserMeetingDto } from '../dto/adviser-meeting.dto';
 import { AdviserMeeting } from '../entity/adviser-meeting.entity';
+import { AdviserForm } from '../entity/adviser-form.entity';
+import * as path from 'path';
+import * as fs from 'fs';
+import { ExcelService } from '../excel/excel.service';
 
 @Injectable()
 export class AdviserService {
@@ -14,10 +18,13 @@ export class AdviserService {
     private readonly adviser: Repository<Adviser>,
     @InjectRepository(AdviserMeeting)
     private readonly adviserMeeting: Repository<AdviserMeeting>,
+    @InjectRepository(AdviserForm)
+    private readonly adviserForm: Repository<AdviserForm>,
     private readonly mailService: MailService,
+    private readonly excel: ExcelService
   ) {}
 
-  async sendMailToAdvisers(meetingInfo: any): Promise<void> {
+  async sendMailToAdvisers(meetingInfo: any, id: number): Promise<void> {
     let i = 0;
 
     const adviserMails = await this.getEmails();
@@ -36,7 +43,7 @@ export class AdviserService {
         ${meetingInfo.organizer}. Собрание начинается в ${meetingInfo.startTime} и будет проходить до ${meetingInfo.endTime}.
         ${adviserNamesMap[i]}, Вам необходимо заполнить форму по ссылке ниже, спасибо за активность!
 			
-				Пожалуйста, заполните форму по http://localhost:3000/adviser-form" ссылке.
+				Пожалуйста, заполните форму по http://localhost:3000/adviser-form?id=${id} ссылке.
 			`;
       i++;
       await this.mailService.sendMail(email, meetingInfo.title, htmlTemplate);
@@ -50,8 +57,35 @@ export class AdviserService {
 
     const meetingInfo = await this.adviserMeeting.save(data);
 
-    await this.sendMailToAdvisers(meetingInfo);
+    await this.sendMailToAdvisers(meetingInfo, meetingInfo.id);
     return meetingInfo;
+  }
+
+  async saveAdviserDataToExcel(dto: any, id: number) {
+    if (!dto) {
+      throw new BadRequestException('Invalid data');
+    }
+
+    const meetingData = await this.adviserMeeting.findOneBy({ id });
+
+    await this.adviserForm.save(dto);
+    
+    const folderPath = path.resolve(__dirname, '../../../src/excel/uploads/adviser');
+    const filePath = path.resolve(folderPath, `${meetingData.title}-${meetingData.id}.xlsx`);
+
+    let fileExists = false;
+    try {
+      await fs.promises.stat(filePath);
+      fileExists = true;
+    } catch (error) {
+      fileExists = false;
+    }
+
+    if (fileExists) {
+      await this.excel.addToExcelFileAdviser(filePath, meetingData, dto);
+    } else {
+      await this.excel.createExcelFileAdviser(meetingData, dto);
+    }
   }
 
   async createAdviser(dto: CreateAdviserDto): Promise<Adviser> {
