@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -68,6 +68,8 @@ export class ExcelService {
     await workbook.xlsx.readFile(existingFilePath);
 
     const worksheet = workbook.getWorksheet('MeetingData');
+
+    if(!worksheet) throw new NotFoundException('Worksheet not found');
 
     // Добавляем новую строку с данными студента
     worksheet.addRow([
@@ -143,6 +145,8 @@ export class ExcelService {
     await workbook.xlsx.readFile(existingFilePath);
 
     const worksheet = workbook.getWorksheet('MeetingData');
+
+    if(!worksheet) throw new NotFoundException('Worksheet not found');
 
     worksheet.addRow([
       meetingData.title,

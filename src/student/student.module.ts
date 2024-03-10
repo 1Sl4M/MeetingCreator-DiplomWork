@@ -11,6 +11,9 @@ import { MailModule } from '../mail/mail.module';
 import { AdviserModule } from '../adviser/adviser.module';
 import { AdviserForm } from '../entity/adviser-form.entity';
 import { ExcelService } from '../excel/excel.service';
+import { AuthModule } from '../auth/auth.module';
+import { AuthService } from '../auth/auth.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -22,11 +25,12 @@ import { ExcelService } from '../excel/excel.service';
       StudentsMeeting,
       AdviserMeeting,
     ]),
+    PassportModule,
     MailModule,
     AdviserModule,
   ],
   controllers: [StudentController],
-  providers: [StudentService, ExcelService],
+  providers: [StudentService, ExcelService, AuthService],
   exports: [StudentService],
 })
 export class StudentModule {}

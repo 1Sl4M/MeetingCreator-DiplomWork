@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../entity/student.entity';
 import { StudentForm } from '../entity/student-form';
@@ -10,7 +10,8 @@ import { MailService } from '../mail/mail.service';
 import { ExcelService } from '../excel/excel.service';
 import { StudentFormDto } from '../dto/student-form.dto';
 import * as fs from 'fs';
-import * as path from 'path'; 
+import * as path from 'path';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentService {
@@ -23,11 +24,8 @@ export class StudentService {
     private readonly studentForm: Repository<StudentForm>,
     private readonly mailService: MailService,
     private readonly excel: ExcelService,
+    //private readonly authService: AuthService
   ) {}
-
-  async createStudent(dto: CreateStudentDto): Promise<Student> {
-    return this.student.save(dto);
-  }
 
   async sendMailToStudents(meetingInfo: any, id: number): Promise<void> {
     let i = 0;
@@ -69,13 +67,22 @@ export class StudentService {
       throw new BadRequestException('Invalid data');
     }
 
-    const meetingData = await this.studentMeeting.findOneBy({ id });
+    const studentMeeting = await this.studentMeeting.findOneBy({ id });
+
+    if (!studentMeeting) {
+      throw new NotFoundException('Student meeting not found');
+    }
 
     await this.studentForm.save(dto);
-    
-    const folderPath = path.resolve(__dirname, '../../../src/excel/uploads/students');
-    const filePath = path.resolve(folderPath, `${meetingData.title}-${meetingData.id}.xlsx`);
 
+    const folderPath = path.resolve(
+      __dirname,
+      '../../../src/excel/uploads/students',
+    );
+    const filePath = path.resolve(
+      folderPath,
+      `${studentMeeting.title}-${studentMeeting.id}.xlsx`,
+    );
 
     let fileExists = false;
     try {
@@ -86,10 +93,26 @@ export class StudentService {
     }
 
     if (fileExists) {
-      await this.excel.addToExcelFile(filePath, meetingData, dto);
+      await this.excel.addToExcelFile(filePath, studentMeeting, dto);
     } else {
-      await this.excel.createExcelFile(meetingData, dto);
+      await this.excel.createExcelFile(studentMeeting, dto);
     }
+  }
+
+  async createStudent(data: CreateStudentDto) {
+    const student = await this.student.save(data);
+
+    return student;
+  }
+
+  async findOneByEmail(email: string): Promise<Student> {
+    const item = await this.student.findOne({ where: { email: email } });
+
+    if(!item) {
+      throw new NotFoundException('Student not found'); 
+    }
+
+    return item;
   }
 
   async getAllStudents(): Promise<Student[]> {

@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Student } from './entity/student.entity';
@@ -10,6 +15,8 @@ import { AdviserModule } from './adviser/adviser.module';
 import { StudentForm } from './entity/student-form';
 import { MailModule } from './mail/mail.module';
 import { AdviserForm } from './entity/adviser-form.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -39,6 +46,7 @@ import { AdviserForm } from './entity/adviser-form.entity';
       StudentsMeeting,
       AdviserMeeting,
     ]),
+    AuthModule,
     StudentModule,
     AdviserModule,
     MailModule,
