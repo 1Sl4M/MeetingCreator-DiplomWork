@@ -3,11 +3,11 @@ import { IsString, IsEmail, MinLength } from 'class-validator';
 export class CreateAdviserDto {
   @IsString()
   @MinLength(3)
-  name: string;
+  declare name: string;
 
   @IsEmail()
-  email: string;
+  declare email: string;
 
   @IsString()
-  affiliation: string;
+  declare affiliation: string;
 }

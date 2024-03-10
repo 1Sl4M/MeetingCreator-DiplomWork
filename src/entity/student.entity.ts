@@ -15,22 +15,25 @@ import { StudentForm } from './student-form';
 @Entity({ name: 'student' })
 export class Student {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  name: string;
+  declare name: string;
+
+  @Column({ default: '' })
+  declare password: string;
 
   @Column()
-  email: string;
+  declare email: string;
 
   @Column()
-  course: number;
+  declare course: number;
 
   @Column()
-  address: string;
+  declare address: string;
 
   @Column()
-  institut: string;
+  declare institut: string;
 
   @ManyToMany(() => Adviser)
   @JoinTable({
@@ -44,15 +47,15 @@ export class Student {
       referencedColumnName: 'id',
     },
   })
-  adviser: Adviser;
+  declare adviser: Adviser;
 
   @ManyToOne(
     () => StudentsMeeting,
     (student_meeting) => student_meeting.students,
   )
   @JoinColumn({ name: 'student_id' })
-  students_meeting: StudentsMeeting;
+  declare students_meeting: StudentsMeeting;
 
   @OneToOne(() => StudentForm, (studentForm) => studentForm.student)
-  studentForm: StudentForm;
+  declare studentForm: StudentForm;
 }

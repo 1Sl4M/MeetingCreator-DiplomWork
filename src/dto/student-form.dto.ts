@@ -2,17 +2,17 @@ import { IsNotEmpty } from 'class-validator';
 
 export class StudentFormDto {
 	@IsNotEmpty()
-  name: string;
+  declare name: string;
 
 	@IsNotEmpty()
-	email:string;
+	declare email:string;
 
 	@IsNotEmpty()
-	course: number;
+	declare course: number;
 
 	@IsNotEmpty()
-  phoneNumber: string;
+  declare phoneNumber: string;
 
 	@IsNotEmpty()
-  institut: string;
+  declare institut: string;
 }

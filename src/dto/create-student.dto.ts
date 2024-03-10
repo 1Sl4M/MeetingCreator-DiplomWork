@@ -3,19 +3,23 @@ import { IsString, IsEmail, MinLength, IsNumber } from 'class-validator';
 export class CreateStudentDto {
   @IsString()
   @MinLength(3)
-  name: string;
+  declare name: string;
 
   @IsEmail()
-  email: string;
-
-  @IsNumber()
-  course: number;
-
-  @IsString()
-  @MinLength(5)
-  address: string;
+  declare email: string;
 
   @IsString()
   @MinLength(3)
-  institut: string;
+  declare password: string;
+
+  @IsNumber()
+  declare course: number;
+
+  @IsString()
+  @MinLength(5)
+  declare address: string;
+
+  @IsString()
+  @MinLength(3)
+  declare institut: string;
 }

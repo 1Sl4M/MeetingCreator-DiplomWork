@@ -11,30 +11,30 @@ import { Adviser } from './adviser.entity';
 @Entity({ name: 'adviser_meeting' })
 export class AdviserMeeting {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  title: string;
+  declare title: string;
 
   @Column()
-  description: string;
+  declare description: string;
 
   @CreateDateColumn({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
-  date: Date;
+  declare date: Date;
 
   @Column()
-  location: string;
+  declare location: string;
 
   @Column()
-  organizer: string;
+  declare organizer: string;
 
   @Column()
-  startTime: string;
+  declare startTime: string;
 
   @Column()
-  endTime: string;
+  declare endTime: string;
 
   @OneToMany(() => Adviser, (adviser) => adviser.adviser_meeting)
   @JoinColumn({ name: 'adviser_id' })
-  adviser: Adviser[];
+  declare adviser: Adviser[];
 }

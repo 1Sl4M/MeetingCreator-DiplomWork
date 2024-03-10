@@ -4,23 +4,23 @@ import { Student } from './student.entity';
 @Entity({ name: 'student-form' })
 export class StudentForm {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  name: string;
+  declare name: string;
 
   @Column()
-  email: string;
+  declare email: string;
 
   @Column()
-  course: number;
+  declare course: number;
 
   @Column()
-  phoneNumber: string;
+  declare phoneNumber: string;
 
   @Column()
-  institut: string;
+  declare institut: string;
 
   @OneToOne(() => Student, (student) => student.studentForm)
-  student: Student;
+  declare student: Student;
 }

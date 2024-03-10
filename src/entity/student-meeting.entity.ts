@@ -11,30 +11,30 @@ import { Student } from './student.entity';
 @Entity({ name: 'student_meeting' })
 export class StudentsMeeting {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  title: string;
+  declare title: string;
 
   @Column()
-  description: string;
+  declare description: string;
 
   @CreateDateColumn({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
-  date: Date;
+  declare date: Date;
 
   @Column()
-  location: string;
+  declare location: string;
 
   @Column()
-  organizer: string;
+  declare organizer: string;
 
   @Column()
-  startTime: string;
+  declare startTime: string;
 
   @Column()
-  endTime: string;
+  declare endTime: string;
 
   @OneToMany(() => Student, (students) => students.students_meeting)
   @JoinColumn({ name: 'id' })
-  students: Student[];
+  declare students: Student[];
 }

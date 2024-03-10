@@ -2,14 +2,14 @@ import { IsNotEmpty } from "class-validator";
 
 export class AdviserFormDto {
 	@IsNotEmpty()
-  name: string;
+  declare name: string;
 
 	@IsNotEmpty()
-	email:string;
+	declare email:string;
 
 	@IsNotEmpty()
-	affiliation: string;
+	declare affiliation: string;
 
 	@IsNotEmpty()
-  phoneNumber: string;
+  declare phoneNumber: string;
 }

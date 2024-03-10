@@ -14,24 +14,24 @@ import { AdviserForm } from './adviser-form.entity';
 @Entity({ name: 'adviser' })
 export class Adviser {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  name: string;
+  declare name: string;
 
   @Column()
-  email: string;
+  declare email: string;
 
   @Column()
-  affiliation: string;
+  declare affiliation: string;
 
   @ManyToMany(() => Student, (student) => student.adviser)
-  students: Student[];
+  declare students: Student[];
 
   @ManyToOne(() => AdviserMeeting, (adviser_meeting) => adviser_meeting.adviser)
   @JoinColumn({ name: 'adviser_id' })
-  adviser_meeting: AdviserMeeting;
+  declare adviser_meeting: AdviserMeeting;
 
   @OneToOne(() => AdviserForm, (adviserForm) => adviserForm.adviser)
-  adviserForm: AdviserForm;
+  declare adviserForm: AdviserForm;
 }

@@ -2,23 +2,23 @@ import { IsNotEmpty } from 'class-validator';
 
 export class StudentsMeetingDto {
   @IsNotEmpty()
-  title: string;
+  declare title: string;
 
   @IsNotEmpty()
-  description: string;
+  declare description: string;
 
   @IsNotEmpty()
-  date: Date;
+  declare date: Date;
 
   @IsNotEmpty()
-  location: string;
+  declare location: string;
 
   @IsNotEmpty()
-  organizer: string;
+  declare organizer: string;
 
   @IsNotEmpty()
-  startTime: string;
+  declare startTime: string;
 
   @IsNotEmpty()
-  endTime: string;
+  declare endTime: string;
 }

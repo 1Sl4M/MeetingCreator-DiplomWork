@@ -4,20 +4,20 @@ import { Adviser } from './adviser.entity';
 @Entity({ name: 'adviser-form' })
 export class AdviserForm {
   @PrimaryGeneratedColumn()
-  id: number;
+  declare id: number;
 
   @Column()
-  name: string;
+  declare name: string;
 
   @Column()
-  email: string;
+  declare email: string;
 
   @Column()
-  phoneNumber: string;
+  declare phoneNumber: string;
 
   @Column()
-  affiliation: string;
+  declare affiliation: string;
 
   @OneToOne(() => Adviser, (adviser) => adviser.adviserForm)
-  adviser: Adviser;
+  declare adviser: Adviser;
 }
