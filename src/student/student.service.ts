@@ -27,6 +27,13 @@ export class StudentService {
     //private readonly authService: AuthService
   ) {}
 
+//   select student.id, student.name, student.email, student.course, student.address, student.institut, student_meeting.title as meetingTitle, 
+// student_meeting.description as meetingDescription, student_meeting.date as meetingDate, student_meeting.location as meetingLocation,
+// student_meeting.organizer as meetingOrganizer
+// from student
+// join student_meeting on student_meeting.id = student.id
+// where student.id = 5 
+
   async sendMailToStudents(meetingInfo: any, id: number): Promise<void> {
     let i = 0;
 

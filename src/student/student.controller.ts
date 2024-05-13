@@ -28,7 +28,6 @@ export class StudentController {
     @Body() data: StudentFormDto,
     @Param('id') id: number,
   ) {
-    console.log(data, id);
     return this.studentService.saveStudentDataToExcel(data, id);
   }
 

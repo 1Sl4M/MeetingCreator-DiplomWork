@@ -68,6 +68,8 @@ export class AdviserService {
 
     const meetingData = await this.adviserMeeting.findOneBy({ id });
 
+    if(!meetingData) throw new BadRequestException('Invalid data'); 
+
     await this.adviserForm.save(dto);
     
     const folderPath = path.resolve(__dirname, '../../../src/excel/uploads/adviser');
