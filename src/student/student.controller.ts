@@ -31,11 +31,10 @@ export class StudentController {
     return this.studentService.saveStudentDataToExcel(data, id);
   }
 
-  // @Get('meeting/info')
-  // getMeetingInfo(data any) {
-  //   console.log(data);
-  //   return this.studentService.getMeetingInfo(data);
-  // }
+  @Get('api/:id')
+  async getAllStudentInfo(@Param('id') id: number) {
+    return this.studentService.getAllStudentInfo(id);
+  }
 
   @Get()
   @UseGuards(JwtAuthGuard)

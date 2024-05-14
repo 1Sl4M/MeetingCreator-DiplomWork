@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../entity/student.entity';
 import { StudentForm } from '../entity/student-form';
@@ -26,13 +30,6 @@ export class StudentService {
     private readonly excel: ExcelService,
     //private readonly authService: AuthService
   ) {}
-
-//   select student.id, student.name, student.email, student.course, student.address, student.institut, student_meeting.title as meetingTitle, 
-// student_meeting.description as meetingDescription, student_meeting.date as meetingDate, student_meeting.location as meetingLocation,
-// student_meeting.organizer as meetingOrganizer
-// from student
-// join student_meeting on student_meeting.id = student.id
-// where student.id = 5 
 
   async sendMailToStudents(meetingInfo: any, id: number): Promise<void> {
     let i = 0;
@@ -115,11 +112,27 @@ export class StudentService {
   async findOneByEmail(email: string): Promise<Student> {
     const item = await this.student.findOne({ where: { email: email } });
 
-    if(!item) {
-      throw new NotFoundException('Student not found'); 
+    if (!item) {
+      throw new NotFoundException('Student not found');
     }
 
     return item;
+  }
+
+  async getAllStudentInfo(studentId: number) {
+    const query = `
+select student.id, student.name, student.email, student.course, student.address, student.institut, student_meeting.title as meetingTitle, 
+student_meeting.description as meetingDescription, student_meeting.date as meetingDate, student_meeting.location as meetingLocation,
+student_meeting.organizer as meetingOrganizer
+from student
+join student_meeting on student_meeting.id = student.id
+where student.id = ${studentId} 
+`;
+
+    const st = await this.student.query(query); 
+    const studentInfo = st[0]; // Получаем первый элемент массива
+
+    return studentInfo;
   }
 
   async getAllStudents(): Promise<Student[]> {
