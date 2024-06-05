@@ -31,22 +31,20 @@ export class StudentService {
     //private readonly authService: AuthService
   ) {}
 
-  async sendMailToStudents(meetingInfo: any, id: number): Promise<void> {
+  // отправление приглашения на почту
+  async sendMailToUsers(meetingInfo: any, id: number): Promise<void> {
     let i = 0;
 
     const studentMails = await this.getEmails();
-    const studentNames = await this.getAllStudents();
-
-    const studentNamesMap = studentNames.map((studentName) => studentName.name);
 
     studentMails.forEach(async (email) => {
       const htmlTemplate = `
-				Приветствую Вас, ${studentNamesMap[i]}!
+				Приветствую Вас!
 
         Приглашаем вас на собрание по теме ${meetingInfo.title}, которое пройдет ${meetingInfo.date} с подробностями -
         ${meetingInfo.description}, собрание будет проходить в ${meetingInfo.location}, организатором является 
         ${meetingInfo.organizer}. Собрание начинается в ${meetingInfo.startTime} и будет проходить до ${meetingInfo.endTime}.
-        ${studentNamesMap[i]}, Вам необходимо заполнить форму по ссылке ниже, спасибо за активность!
+        Вам необходимо заполнить форму по ссылке ниже, спасибо за активность!
 			
 				Пожалуйста, заполните форму по http://localhost:3000/student-form?id=${id} ссылке.
 			`;
@@ -55,6 +53,7 @@ export class StudentService {
     });
   }
 
+  // сохранение в данных о собрании бд
   async saveMeetingDate(data: StudentsMeetingDto) {
     if (!data) {
       throw new BadRequestException('Invalid data');
@@ -62,11 +61,12 @@ export class StudentService {
 
     const meetingInfo = await this.studentMeeting.save(data);
 
-    await this.sendMailToStudents(meetingInfo, meetingInfo.id);
+    await this.sendMailToUsers(meetingInfo, meetingInfo.id);
     return meetingInfo;
   }
 
-  async saveStudentDataToExcel(dto: any, id: number) {
+  //сохранение информации о собрании в excel
+  async saveDataToExcel(dto: any, id: number) {
     if (!dto) {
       throw new BadRequestException('Invalid data');
     }
@@ -81,7 +81,7 @@ export class StudentService {
 
     const folderPath = path.resolve(
       __dirname,
-      '../../../src/excel/uploads/students',
+      '../../../src/excel/uploads',
     );
     const filePath = path.resolve(
       folderPath,
@@ -103,12 +103,14 @@ export class StudentService {
     }
   }
 
+  //создание студента
   async createStudent(data: CreateStudentDto) {
     const student = await this.student.save(data);
 
     return student;
   }
 
+  //поиск по email
   async findOneByEmail(email: string): Promise<Student> {
     const item = await this.student.findOne({ where: { email: email } });
 
@@ -119,6 +121,7 @@ export class StudentService {
     return item;
   }
 
+  //получение всей информации о конкретном студенте
   async getAllStudentInfo(studentId: number) {
     const query = `
 select student.id, student.name, student.email, student.course, student.address, student.institut, student_meeting.title as meetingTitle, 
@@ -135,12 +138,14 @@ where student.id = ${studentId}
     return studentInfo;
   }
 
+  //получение всех студентов
   async getAllStudents(): Promise<Student[]> {
     return this.student.find({
       relations: ['adviser'],
     });
   }
 
+  //получение студента по айди
   async getById(id: number) {
     const student = await this.student.findOne({
       where: { id },
@@ -152,6 +157,7 @@ where student.id = ${studentId}
     return student;
   }
 
+  //получение всех почт
   async getEmails(): Promise<string[]> {
     const students = await this.student.find();
     return students.map((student) => student.email);

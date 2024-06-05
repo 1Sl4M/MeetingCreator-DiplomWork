@@ -17,6 +17,7 @@ export class AuthService {
     private readonly studentService: StudentService,
   ) {}
 
+  //авторизация
   async signIn(email: string, password: string): Promise<any> {
     const student = await this.studentService.findOneByEmail(email);
 
@@ -37,6 +38,7 @@ export class AuthService {
     return result;
   }
 
+  //регистрация
   async registerStudent(dto: CreateStudentDto) {
     const salt = 10;
     const { password, ...rest } = dto;

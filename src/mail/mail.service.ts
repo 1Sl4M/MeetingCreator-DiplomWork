@@ -11,6 +11,7 @@ export class MailService {
     },
   });
 
+  //отправка сообщения на почту
   async sendMail(to: string, theme: string, text: string): Promise<void> {
     const mailOptions = {
       from: 'shopalovis@gmail.com',

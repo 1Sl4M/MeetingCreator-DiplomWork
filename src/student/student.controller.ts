@@ -24,11 +24,12 @@ export class StudentController {
   }
 
   @Post('form/:id')
+  @UseGuards(JwtAuthGuard)
   async saveStudentDataToExcel(
     @Body() data: StudentFormDto,
     @Param('id') id: number,
   ) {
-    return this.studentService.saveStudentDataToExcel(data, id);
+    return this.studentService.saveDataToExcel(data, id);
   }
 
   @Get('api/:id')

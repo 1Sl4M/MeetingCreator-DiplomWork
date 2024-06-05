@@ -82,12 +82,6 @@ export class AdviserService {
     } catch (error) {
       fileExists = false;
     }
-
-    if (fileExists) {
-      await this.excel.addToExcelFileAdviser(filePath, meetingData, dto);
-    } else {
-      await this.excel.createExcelFileAdviser(meetingData, dto);
-    }
   }
 
   async createAdviser(dto: CreateAdviserDto): Promise<Adviser> {

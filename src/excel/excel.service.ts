@@ -9,6 +9,8 @@ import { AdviserFormDto } from '../dto/adviser-form.dto';
 
 @Injectable()
 export class ExcelService {
+
+  //создание excel документа
   async createExcelFile(
     meeting: StudentsMeeting,
     studentMeeting: StudentFormDto,
@@ -55,10 +57,18 @@ export class ExcelService {
       studentMeeting.institut,
     ]);
 
-    await workbook.xlsx.writeFile(filePath);
-    console.log(`Empty Excel file created at: ${filePath}`);
+    console.log(filePath +123456);
+
+    try {
+      await workbook.xlsx.writeFile(filePath);
+      console.log(`Empty Excel file created at: ${filePath}`);
+    } catch (error) {
+      console.error(error);
+    }
+    
   }
 
+  //редактирование excel документа
   async addToExcelFile(
     existingFilePath: string,
     meetingData: StudentsMeeting,
@@ -66,7 +76,6 @@ export class ExcelService {
   ) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(existingFilePath);
-
     const worksheet = workbook.getWorksheet('MeetingData');
 
     if(!worksheet) throw new NotFoundException('Worksheet not found');
@@ -84,81 +93,10 @@ export class ExcelService {
       studentData.institut,
     ]);
 
-    // Сохраняем обновленный файл
-    await workbook.xlsx.writeFile(existingFilePath);
-  }
-
-  async createExcelFileAdviser(
-    meeting: AdviserMeeting,
-    adviserMeeting: AdviserFormDto,
-  ): Promise<void> {
-    const folderPath = path.resolve(
-      __dirname,
-      '../../../src/excel/uploads/adviser',
-    );
-    const filePath = path.resolve(
-      folderPath,
-      `${meeting.title}-${meeting.id}.xlsx`,
-    );
-
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
+    try {
+      await workbook.xlsx.writeFile(existingFilePath);
+    } catch (error) {
+      console.error(error);
     }
-
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('MeetingData', {
-      properties: { defaultColWidth: 30 }, 
-    });
-
-    worksheet.addRow([
-      'Title',
-      'Description',
-      'Location',
-      'Date',
-      'Name',
-      'Email',
-      'Affiliation',
-      'Phone number',
-    ]);
-
-    worksheet.addRow([
-      meeting.title,
-      meeting.description,
-      meeting.location,
-      new Date(meeting.date).toISOString().split('T')[0],
-      adviserMeeting.name,
-      adviserMeeting.email,
-      adviserMeeting.affiliation,
-      adviserMeeting.phoneNumber,
-    ]);
-
-    await workbook.xlsx.writeFile(filePath);
-    console.log(`Empty Excel file created at: ${filePath}`);
-  }
-
-  async addToExcelFileAdviser(
-    existingFilePath: string,
-    meetingData: AdviserMeeting,
-    studentData: any,
-  ) {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(existingFilePath);
-
-    const worksheet = workbook.getWorksheet('MeetingData');
-
-    if(!worksheet) throw new NotFoundException('Worksheet not found');
-
-    worksheet.addRow([
-      meetingData.title,
-      meetingData.description,
-      meetingData.location,
-      new Date(meetingData.date).toISOString().split('T')[0],
-      studentData.name,
-      studentData.email,
-      studentData.affiliation,
-      studentData.phoneNumber,
-    ]);
-
-    await workbook.xlsx.writeFile(existingFilePath);
   }
 }
